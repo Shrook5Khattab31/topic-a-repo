@@ -1,0 +1,44 @@
+id,issue_type,evidence,disposition,confidence
+5996,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+6031,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+4068,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+4076,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 1]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+4077,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+6537,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+6548,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+6566,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 1, 0]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+6012,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+6017,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+4656,exact_duplicate_label_conflict,"text repeated 2x in train with labels [0, 1]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+4659,exact_duplicate_label_conflict,"text repeated 2x in train with labels [0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+1752,exact_duplicate_label_conflict,"text repeated 2x in train with labels [0, 1]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+1968,exact_duplicate_label_conflict,"text repeated 2x in train with labels [0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+1723,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+1922,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+6087,exact_duplicate_label_conflict,"text repeated 4x in train with labels [0, 0, 1, 0]; majority_label=0, this_row_label=0 (proposed_label=0)",keep_but_flag,medium
+6090,exact_duplicate_label_conflict,"text repeated 4x in train with labels [0, 0, 1, 0]; majority_label=0, this_row_label=0 (proposed_label=0)",keep_but_flag,medium
+6097,exact_duplicate_label_conflict,"text repeated 4x in train with labels [0, 0, 1, 0]; majority_label=0, this_row_label=1 (proposed_label=0)",fix,medium
+6118,exact_duplicate_label_conflict,"text repeated 4x in train with labels [0, 0, 1, 0]; majority_label=0, this_row_label=0 (proposed_label=0)",keep_but_flag,medium
+881,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 0]; majority_label=0, this_row_label=1 (proposed_label=0)",fix,medium
+898,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 0]; majority_label=0, this_row_label=0 (proposed_label=0)",keep_but_flag,medium
+916,exact_duplicate_label_conflict,"text repeated 3x in train with labels [1, 0, 0]; majority_label=0, this_row_label=0 (proposed_label=0)",keep_but_flag,medium
+1760,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+1950,exact_duplicate_label_conflict,"text repeated 2x in train with labels [1, 0]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+8698,exact_duplicate_label_conflict,"text repeated 4x in train with labels [1, 0, 0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+8702,exact_duplicate_label_conflict,"text repeated 4x in train with labels [1, 0, 0, 1]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+8714,exact_duplicate_label_conflict,"text repeated 4x in train with labels [1, 0, 0, 1]; majority_label=1, this_row_label=0 (proposed_label=1)",fix,medium
+8739,exact_duplicate_label_conflict,"text repeated 4x in train with labels [1, 0, 0, 1]; majority_label=1, this_row_label=1 (proposed_label=1)",keep_but_flag,medium
+5592,near_duplicate_label_conflict,normalized_text='2pcs 18w cree led work light offroad lamp car truck boat mining 4wd flood beam f' label=0 split=dev,keep_but_flag,low
+5588,near_duplicate_label_conflict,normalized_text='2pcs 18w cree led work light offroad lamp car truck boat mining 4wd flood beam f' label=0 split=train,keep_but_flag,low
+5580,near_duplicate_label_conflict,normalized_text='2pcs 18w cree led work light offroad lamp car truck boat mining 4wd flood beam f' label=1 split=train,keep_but_flag,low
+5570,near_duplicate_label_conflict,normalized_text='2pcs 18w cree led work light offroad lamp car truck boat mining 4wd flood beam f' label=0 split=train,keep_but_flag,low
+8301,near_duplicate_label_conflict,normalized_text='360wisenews china s stock market crash are there gems in the rubble' label=0 split=dev,keep_but_flag,low
+8341,near_duplicate_label_conflict,normalized_text='360wisenews china s stock market crash are there gems in the rubble' label=0 split=heldout,ambiguous,low
+5903,hard_negative_confident_error,"model_score=0.031, true_label=1, text=""You can never escape me. Bullets don't harm me. Nothing harms me. But I know pain. I know pain. Some""",ambiguous,high
+1409,hard_negative_confident_error,"model_score=0.050, true_label=1, text='?? New Ladies Shoulder Tote #Handbag Faux Leather Hobo Purse Cross Body Bag #Womens http://t.co/zujw'",ambiguous,high
+3796,hard_negative_confident_error,"model_score=0.056, true_label=1, text='So you have a new weapon that can cause un-imaginable destruction.'",ambiguous,high
+4895,hard_negative_confident_error,"model_score=0.078, true_label=1, text=""@allen_enbot If you mess up it's gonna explode...""",ambiguous,high
+9029,hard_negative_confident_error,"model_score=0.080, true_label=1, text='Keep shape your shoes ??#Amazon #foot #adjust #shape #shoe Mini Shoe Tree Stretcher Shaper Width Ext'",ambiguous,high
+8721,hard_negative_confident_error,"model_score=0.082, true_label=1, text='Do you feel like you are sinking in low self-image? Take the quiz: http://t.co/bJoJVM0pjX http://t.c'",ambiguous,high
+10795,hard_negative_confident_error,"model_score=0.083, true_label=1, text='Israel wrecked my home. Now it wants my land. \nhttps://t.co/g0r3ZR1nQj'",ambiguous,high
+6134,hard_negative_confident_error,"model_score=0.086, true_label=1, text='Hellfire! We don\x89Ûªt even want to think about it or mention it so let\x89Ûªs not do anything that leads'",ambiguous,high

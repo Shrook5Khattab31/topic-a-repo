@@ -1,0 +1,7 @@
+{
+  "metric": "heldout_f1_target_1",
+  "reference_floor_f1": 0.0,
+  "reference_baseline_f1": 0.7574221578566256,
+  "tolerance": 0.001,
+  "notes": "Reference metrics are computed on the real Kaggle Disaster Tweets training CSV mirrored from ucbrise/kaggle-nlp-disasters, using the fixed stratified split in data/split_indices.json."
+}
