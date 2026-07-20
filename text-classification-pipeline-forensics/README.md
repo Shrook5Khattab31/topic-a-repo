@@ -32,10 +32,15 @@ clean re-run):
 rm -f predictions/*.csv results/*.csv
 
 python3 experiments/ticket1_baseline.py        # baseline discrepancy diagnosis
+python3 experiments/ticket1_validation.py      # split integrity, determinism, bootstrap CI, McNemar test
 python3 experiments/ticket2_normalization.py   # normalization lever
+python3 experiments/ticket2_validation.py      # McNemar test, vocab diff, mechanism trace
 python3 experiments/ticket3_shortcuts.py       # keyword/length shortcut audit
+python3 experiments/ticket3_validation.py      # redundancy, combined model, keyword legitimacy
 python3 experiments/ticket4_decision_rule.py   # threshold/class-weight/second-classifier
+python3 experiments/ticket4_validation.py      # McNemar, bootstrap CI, oracle threshold check
 python3 experiments/ticket5_data_quality.py    # duplicate/mislabel/hard-negative audit
+python3 experiments/ticket5_validation.py      # controlled label-fix experiment + significance test
 ```
 
 ## What each ticket script does

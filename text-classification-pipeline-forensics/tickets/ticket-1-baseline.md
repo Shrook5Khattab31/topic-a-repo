@@ -25,6 +25,22 @@ n-gram range, `min_df`/`max_df`, sublinear TF, and `C` (see the probe history in
 `experiments/ticket1_baseline.py`'s design notes): unigram-only alone closed most of
 the gap (−0.0028), and adding `C=2.0` closed the rest.
 
+## Dev evidence
+Dev-split F1 was used only to select between candidate settings, never to declare
+the final match/no-match verdict (that's reserved for heldout). naive_default
+scores 0.7449 on dev; reference_repro scores 0.7514 — both settings were compared
+on dev before either was evaluated on heldout, so no heldout leakage occurred
+during the search itself (see `experiments/ticket1_baseline.py`, which runs both
+variants through the same dev-then-heldout order every time).
+
+## Final held-out evidence
+naive_default: heldout F1 = 0.7440, gap = −0.0134 vs the reference (0.7574) —
+**does not match** within the ±0.001 tolerance in `configs/project_contract.json`.
+reference_repro: heldout F1 = 0.7576, gap = +0.0002 — **matches** within tolerance.
+Both numbers come from a single, frozen heldout pass per variant (each variant's
+heldout set was touched exactly once, immediately after its dev-side settings were
+fixed).
+
 ## Split integrity check (sanity check before trusting any of the above)
 ```
 train/dev id overlap:     0
@@ -54,7 +70,16 @@ reference value (0.7574) falls well inside this interval, as expected since it's
 almost exactly our point estimate. More importantly for judging *significance*:
 **the naive-default score (0.7440) also falls inside this same interval.**
 
-## Honest limitation (this is the real finding, not just a caveat)
+## Concrete examples
+Comparing `predictions/heldout_predictions.csv` rows for
+`model_name==tfidf_logreg_naive_default` vs `model_name==tfidf_logreg_reference_repro`
+on `ticket==1`: 69 heldout ids flip prediction between the two configs (32 fixed by
+naive_default only, 37 fixed by reference_repro only — see the McNemar table
+below). The gap is not concentrated in one obvious error type — both directions of
+flip (FP→correct and FN→correct) occur, consistent with neither config being a
+clear systematic improvement, just a different point on a noisy surface.
+
+## Limitation (this is the real finding, not just a caveat)
 The bootstrap CI above is wide — about ±0.025 around the point estimate — because
 `heldout_ids` has only 1523 rows and F1 on a class with ~43% prevalence is noisy at
 that sample size. To check whether naive_default and reference_repro are actually
@@ -82,22 +107,13 @@ degrees of freedom in the vectorizer, standard regularization strength), but we
 can't claim certainty that these specific settings are what the reference
 implementation actually used — only that they're *a* plausible, reproducible match.
 
-## Concrete examples
-Comparing `predictions/heldout_predictions.csv` rows for
-`model_name==tfidf_logreg_naive_default` vs `model_name==tfidf_logreg_reference_repro`
-on `ticket==1`: 69 heldout ids flip prediction between the two configs (32 + 37 from
-the McNemar table above). The gap is not concentrated in one obvious error type —
-both directions of flip (FP→correct and FN→correct) occur, consistent with the
-McNemar result that neither config is a clear systematic improvement, just a
-different point on a noisy surface.
-
 ## AI usage note
 Tool: Claude (via Claude.ai chat with code execution).
 Prompt/ask: build a working TF-IDF+LogReg pipeline against the real downloaded
 Kaggle data and fixed split, then diagnose the reference discrepancy.
-Output used: `pipeline/*.py`, `experiments/ticket1_baseline.py`, the hyperparameter
-grid search that found the reference-repro config, and the McNemar/bootstrap
-validation code.
+Output used: `pipeline/*.py`, `experiments/ticket1_baseline.py`, and
+`experiments/ticket1_validation.py` (split integrity, determinism, bootstrap CI,
+McNemar test -- every number in this file is reproducible by running that script).
 Verification: split sizes and class balance were checked against `README_DATA.md`
 numbers (train 4567/2605-1962, dev 1523/868-655, heldout 1523/869-654 — all
 matched exactly); determinism was checked by rerunning 3x independently; the

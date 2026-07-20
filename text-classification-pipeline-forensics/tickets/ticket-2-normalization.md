@@ -13,9 +13,13 @@ Normalization config, chosen from `pipeline/preprocess.py: CONFIGS` (`raw`,
 here is whether `#word` is unwrapped to `word` or left as literal `#word` before
 casing/URL/mention handling (which is held constant across all 5 configs).
 
-## Controlled experiment / dev evidence
+## Controlled experiment
 All 5 configs trained on `train_ids` with the fixed reference-repro model settings
-from Ticket 1 (unigrams, no sublinear TF, C=2.0), evaluated on `dev_ids`:
+from Ticket 1 (unigrams, no sublinear TF, C=2.0), differing only in the
+normalization config applied to the tweet text before vectorization.
+
+## Dev evidence
+Evaluated on `dev_ids`:
 
 | Config | Dev F1 | Dev P | Dev R |
 |---|---|---|---|
@@ -28,7 +32,7 @@ from Ticket 1 (unigrams, no sublinear TF, C=2.0), evaluated on `dev_ids`:
 `keep_hashtags_raw` wins on dev by 0.0004 F1 and was frozen before touching
 heldout, per the assignment's split-usage rule.
 
-## Held-out evidence
+## Final held-out evidence
 `keep_hashtags_raw` heldout F1 = 0.7595 vs `baseline` heldout F1 = 0.7576.
 Only **3 of 1523** heldout predictions differ between the two configs — all 3 were
 false positives under `baseline` that become correct (true negative) under
@@ -122,10 +126,10 @@ happening.
 Tool: Claude (via Claude.ai chat with code execution).
 Prompt/ask: run the 5-config dev comparison, freeze the winner, evaluate on
 heldout, and explain why predictions changed.
-Output used: `experiments/ticket2_normalization.py`, plus follow-up diagnostic code
-(vocabulary diffing, tokenizer inspection, McNemar test) that was not in the
-original script and was added specifically to check whether the stated hypothesis
-actually explained the result.
+Output used: `experiments/ticket2_normalization.py` and
+`experiments/ticket2_validation.py` (McNemar test, per-id normalized-text diff,
+tokenizer inspection, vocabulary diff, source-tweet trace -- every number and
+example in this file is reproducible by running that script).
 Verification: the "mechanism" claim was checked three ways before writing it up —
 (1) confirmed 2 of 3 flipped ids contain no hashtag at all, ruling out a per-example
 explanation; (2) confirmed sklearn's tokenizer produces identical tokens for
