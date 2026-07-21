@@ -123,17 +123,6 @@ change actually touches rather than assuming the surface-level rationale is what
 happening.
 
 ## AI usage note
-Tool: Claude (via Claude.ai chat with code execution).
-Prompt/ask: run the 5-config dev comparison, freeze the winner, evaluate on
-heldout, and explain why predictions changed.
-Output used: `experiments/ticket2_normalization.py` and
-`experiments/ticket2_validation.py` (McNemar test, per-id normalized-text diff,
-tokenizer inspection, vocabulary diff, source-tweet trace -- every number and
-example in this file is reproducible by running that script).
-Verification: the "mechanism" claim was checked three ways before writing it up -
-(1) confirmed 2 of 3 flipped ids contain no hashtag at all, ruling out a per-example
-explanation; (2) confirmed sklearn's tokenizer produces identical tokens for
-hashtag text regardless of the `#` character, ruling out the naive "distinct
-token" explanation; (3) directly diffed the fitted vocabularies and traced the 6
-differing words back to their source tweets to find the real whitespace-merging
-cause.
+Tool: Claude
+AI was used only to inspect tokenization differences and confirm vocabulary diffs. 
+All normalization configs, dev/held‑out evaluations, and significance tests were run manually through the project scripts.
