@@ -27,11 +27,47 @@ def load_split_ids(split_path: Path = None) -> dict:
         return json.load(f)
 
 
+
+def validate_split_ids(df: pd.DataFrame, split_ids: dict) -> None:
+    """Validate the fixed split before any model uses it.
+
+    The assignment depends on train/dev/heldout being disjoint and covering the
+    provided Kaggle train.csv exactly once. Failing fast here prevents silent
+    leakage or accidental split drift.
+    """
+    required = ["train_ids", "dev_ids", "heldout_ids"]
+    missing_keys = [k for k in required if k not in split_ids]
+    if missing_keys:
+        raise ValueError(f"split_indices.json missing keys: {missing_keys}")
+
+    split_sets = {k: set(split_ids[k]) for k in required}
+    if any(len(split_sets[k]) != len(split_ids[k]) for k in required):
+        raise ValueError("duplicate ids found inside one split list")
+
+    overlaps = {
+        "train/dev": split_sets["train_ids"] & split_sets["dev_ids"],
+        "train/heldout": split_sets["train_ids"] & split_sets["heldout_ids"],
+        "dev/heldout": split_sets["dev_ids"] & split_sets["heldout_ids"],
+    }
+    bad = {name: ids for name, ids in overlaps.items() if ids}
+    if bad:
+        examples = {name: sorted(ids)[:5] for name, ids in bad.items()}
+        raise ValueError(f"split overlap detected: {examples}")
+
+    csv_ids = set(df["id"])
+    union_ids = split_sets["train_ids"] | split_sets["dev_ids"] | split_sets["heldout_ids"]
+    if union_ids != csv_ids:
+        missing = sorted(union_ids - csv_ids)[:5]
+        extra = sorted(csv_ids - union_ids)[:5]
+        raise ValueError(f"split ids do not match train.csv exactly; missing={missing}, extra={extra}")
+
 def get_splits(df: pd.DataFrame = None, split_ids: dict = None):
     """Returns (train_df, dev_df, heldout_df) using the fixed id lists.
     Raises if any id is missing so silent split drift is caught early."""
     df = df if df is not None else load_raw()
     split_ids = split_ids if split_ids is not None else load_split_ids()
+
+    validate_split_ids(df, split_ids)
 
     id_to_row = df.set_index("id")
 

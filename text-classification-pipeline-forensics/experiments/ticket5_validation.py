@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from pipeline.data import load_raw, get_splits
 from pipeline.model import build_texts, fit_tfidf_logreg, predict_scores, scores_to_preds, evaluate, REFERENCE_REPRO_TFIDF_KWARGS, REFERENCE_REPRO_C
 from experiments.ticket1_validation import mcnemar_test
+from pipeline.artifacts import append_summary, compare_error_sets
 
 
 def apply_majority_vote_fix(train_df):
@@ -65,6 +66,47 @@ def main():
     print(f"heldout delta: {m_held_fixed['f1_target_1']-m_held_base['f1_target_1']:+.4f}")
 
     mcnemar_test(y_heldout, preds_held_base, preds_held_fixed, "no_fix", "label_fix")
+
+    base_wrong = set(heldout_df["id"][preds_held_base != y_heldout])
+    fixed_wrong = set(heldout_df["id"][preds_held_fixed != y_heldout])
+    fixed_ids, new_error_ids = compare_error_sets(base_wrong, fixed_wrong)
+
+    heldout_lookup = heldout_df.set_index("id")
+    base_preds_by_id = dict(zip(heldout_df["id"], preds_held_base))
+    fixed_preds_by_id = dict(zip(heldout_df["id"], preds_held_fixed))
+
+    def classify_errors(ids, preds_by_id):
+        fp, fn = 0, 0
+        for _id in ids:
+            true_label = heldout_lookup.loc[_id, "target"]
+            pred_label = preds_by_id.get(_id)
+            if pred_label == 1 and true_label == 0:
+                fp += 1
+            elif pred_label == 0 and true_label == 1:
+                fn += 1
+        return fp, fn
+
+    fixed_fp, fixed_fn = classify_errors(fixed_ids, base_preds_by_id)
+    new_fp, new_fn = classify_errors(new_error_ids, fixed_preds_by_id)
+
+    append_summary({
+        "ticket": 5,
+        "model_name": "tfidf_logreg_majority_vote_label_fix",
+        "dev_f1_target_1": round(m_dev_fixed["f1_target_1"], 4),
+        "heldout_f1_target_1": round(m_held_fixed["f1_target_1"], 4),
+        "heldout_accuracy": round(m_held_fixed["accuracy"], 4),
+        "fixed_fp": fixed_fp,
+        "fixed_fn": fixed_fn,
+        "new_fp": new_fp,
+        "new_fn": new_fn,
+        "decision": "reject",
+        "decision_reason": (
+            f"12 train duplicate-conflict labels changed; dev F1 "
+            f"{m_dev_base['f1_target_1']:.4f}->{m_dev_fixed['f1_target_1']:.4f}, "
+            f"heldout F1 {m_held_base['f1_target_1']:.4f}->{m_held_fixed['f1_target_1']:.4f}; "
+            "heldout degradation confirmed by McNemar p=0.0117"
+        ),
+    })
 
 
 if __name__ == "__main__":

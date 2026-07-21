@@ -5,7 +5,6 @@ Sweeps threshold on DEV to show the precision/recall tradeoff (not just best F1)
 compares class_weight='balanced' vs None, and trains a second CPU classifier
 (linear SVM via SGD) to compare against the reference-repro Logistic Regression.
 """
-import json
 import sys
 from pathlib import Path
 import numpy as np
@@ -24,8 +23,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 def main():
     df = load_raw()
     train_df, dev_df, heldout_df = get_splits(df)
-    contract = json.load(open(REPO_ROOT / "configs" / "project_contract.json"))
-
     train_texts = build_texts(train_df, "baseline")
     dev_texts = build_texts(dev_df, "baseline")
     heldout_texts = build_texts(heldout_df, "baseline")
@@ -79,7 +76,15 @@ def main():
         "logreg_balanced_thr0.5": (dev_preds_bal, m_bal["f1_target_1"]),
         "linear_svm_thr0.5": (dev_preds_svm, m_svm["f1_target_1"]),
     }
-    winner_name = max(candidates, key=lambda k: candidates[k][1])
+    # Tie-break deliberately favors the threshold-only intervention over
+    # retraining with class weights when dev F1 is identical.
+    priority = {
+        "logreg_thr0.5": 0,
+        f"logreg_thr{best_thr:.2f}": 3,
+        "logreg_balanced_thr0.5": 2,
+        "linear_svm_thr0.5": 1,
+    }
+    winner_name = max(candidates, key=lambda k: (candidates[k][1], priority[k]))
     print(f"\nWinner on dev: {winner_name} (dev_f1={candidates[winner_name][1]:.4f}) -- frozen for heldout")
 
     # --- Evaluate winner on heldout, compare errors to Ticket 1 reference-repro baseline ---

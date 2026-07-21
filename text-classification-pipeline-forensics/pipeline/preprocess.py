@@ -39,7 +39,9 @@ def normalize(
     if strip_mentions:
         t = MENTION_RE.sub(" ", t)
     if unwrap_hashtags:
-        t = HASHTAG_RE.sub(r"\1", t)  # keep the word, drop the '#'
+        # Preserve the original unwrap behavior used in the controlled experiments;
+        # Ticket 2 documents its whitespace edge case.
+        t = HASHTAG_RE.sub(r"\1", t)
     if strip_emoji:
         t = EMOJI_RE.sub(" ", t)
     if strip_punct:

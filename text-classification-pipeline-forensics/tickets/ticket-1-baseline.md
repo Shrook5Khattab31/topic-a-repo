@@ -73,11 +73,37 @@ almost exactly our point estimate. More importantly for judging *significance*:
 ## Concrete examples
 Comparing `predictions/heldout_predictions.csv` rows for
 `model_name==tfidf_logreg_naive_default` vs `model_name==tfidf_logreg_reference_repro`
-on `ticket==1`: 69 heldout ids flip prediction between the two configs (32 fixed by
-naive_default only, 37 fixed by reference_repro only - see the McNemar table
-below). The gap is not concentrated in one obvious error type - both directions of
-flip (FP→correct and FN→correct) occur, consistent with neither config being a
-clear systematic improvement, just a different point on a noisy surface.
+on `ticket==1`: 69 heldout ids flip prediction between the two configs. The paired
+breakdown is 32 examples where the naive-default model is right and the
+reference-repro model is wrong, versus 37 examples where the reference-repro model
+is right and the naive-default model is wrong.
+
+Representative flips show why this is a reproducibility/discrepancy ticket rather
+than a clear model-quality win:
+
+| id | true | naive pred / score | reference pred / score | interpretation |
+|---|---:|---|---|---|
+| 907 | 1 | 0 / 0.432 | 1 / 0.503 | borderline bioterrorism tweet moves just over threshold |
+| 1638 | 1 | 0 / 0.471 | 1 / 0.587 | Hiroshima/bombing context is recovered by the reference config |
+| 1796 | 1 | 0 / 0.426 | 1 / 0.561 | explicit violence terms move from FN to correct positive |
+| 117 | 0 | 0 / 0.442 | 1 / 0.592 | ambiguous accident mention becomes a new false positive |
+| 767 | 0 | 0 / 0.453 | 1 / 0.507 | figurative avalanche quotation becomes a new false positive |
+
+The flips occur in both directions and are mostly near the 0.5 decision boundary.
+That pattern supports the conclusion that the tolerance match is reproducible but
+should not be over-claimed as proof that one nearby TF-IDF configuration is
+statistically superior to the other.
+
+## Ticket 1 completion checklist
+- Hypothesis stated: yes.
+- Intended lever isolated: TF-IDF settings and Logistic Regression `C`.
+- Controlled dev comparison: yes, same split/preprocessing/seed.
+- Frozen heldout comparison: yes.
+- Reference contract checked: yes, `0.7576` vs `0.7574`, within ±0.001.
+- Split integrity checked: yes, no overlap and all 7613 rows covered.
+- Two discrepancy probes supplied: determinism and bootstrap CI.
+- Concrete moved examples supplied: yes, with ids, labels, scores, and mechanism.
+- Limitation supplied: yes, wide CI and non-significant McNemar test.
 
 ## Limitation (this is the real finding, not just a caveat)
 The bootstrap CI above is wide - about ±0.025 around the point estimate - because

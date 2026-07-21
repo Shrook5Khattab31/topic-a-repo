@@ -12,6 +12,7 @@ from pipeline.preprocess import apply_config
 
 
 def build_texts(df, config_name="baseline"):
+    """Return normalized tweet text in dataframe order for reproducible vectorization."""
     return df["text"].apply(lambda t: apply_config(t, config_name)).tolist()
 
 
@@ -61,6 +62,7 @@ def predict_scores(vec, clf, texts):
 
 
 def scores_to_preds(scores, threshold=0.5):
+    """Convert positive-class scores to binary predictions at a fixed threshold."""
     return (scores >= threshold).astype(int)
 
 

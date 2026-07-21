@@ -37,6 +37,18 @@ passes.
 **Heldout hard negatives (reported only, never edited or removed):** 295 of 1523
 heldout examples (19.4%) are misclassified by the reference-repro model.
 
+Representative exact-duplicate conflicts from the audit table:
+
+| ids | labels | majority | example text pattern |
+|---|---|---:|---|
+| 5996, 6031 | [1, 0] | tie/1 by rule | Nestle/Maggi unsafe hazardous food-scare tweet |
+| 4068, 4076, 4077 | [1, 0, 1] | 1 | refugee/IDP/genocide political-disaster tweet |
+| 6537, 6548, 6566 | [1, 1, 0] | 1 | traffic incident with injury, I-495 |
+| 6087, 6090, 6097, 6118 | [0, 0, 1, 0] | 0 | Hellfire religious quotation |
+
+The audit table keeps the original row label and proposed majority label in the
+`evidence` string, so the proposed correction is transparent and reversible.
+
 ## Dev evidence
 
 | | Dev F1 |
@@ -112,6 +124,28 @@ Using the required vocabulary (`fix`, `keep_but_flag`, `ambiguous`,
 - Near-duplicate conflicts in dev/heldout → `ambiguous`
 - Hard-negative heldout errors → `ambiguous` (heldout labels/examples are never
   edited or removed, per the assignment rules)
+
+
+## Artifact check
+`results/summary.csv` now contains the Ticket 5 controlled-experiment row:
+`tfidf_logreg_majority_vote_label_fix`, dev F1 0.7545, heldout F1 0.7516,
+decision `reject`. `results/data_quality_audit.csv` contains 43 non-duplicate
+evidence rows: 29 exact-duplicate conflict rows, 6 near-duplicate rows, and 8
+hard-negative rows.
+
+## Ticket 5 completion checklist
+- Hypothesis stated: yes.
+- Intended data-quality lever isolated: train-only majority-vote label correction.
+- Dev evidence supplied: yes.
+- Heldout evidence supplied: yes.
+- Original and proposed labels preserved: yes, in the audit evidence field.
+- Heldout labels/examples untouched: yes.
+- Duplicate, near-duplicate, and hard-negative categories separated: yes.
+- Dispositions supplied: yes, `fix`, `keep_but_flag`, and `ambiguous`.
+- Concrete examples supplied: yes, duplicate conflict rows and hard negatives.
+- Controlled correction tested rather than assumed: yes, with McNemar p=0.0117.
+- Final decision: reject the correction despite dev improvement because heldout
+  degradation is significant.
 
 ## Limitation
 Only 12 rows were affected by the fix, which is both the finding's strength (a

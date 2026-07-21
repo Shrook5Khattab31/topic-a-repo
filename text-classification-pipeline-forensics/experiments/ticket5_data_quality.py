@@ -74,7 +74,7 @@ def main():
             "id": int(row["id"]),
             "issue_type": "near_duplicate_label_conflict",
             "evidence": f"normalized_text={row['_norm'][:80]!r} label={row['target']} split={split}",
-            "disposition": "ambiguous" if split == "heldout" else "keep_but_flag",
+            "disposition": "ambiguous" if split in {"dev", "heldout"} else "keep_but_flag",
             "confidence": "low",
         })
 

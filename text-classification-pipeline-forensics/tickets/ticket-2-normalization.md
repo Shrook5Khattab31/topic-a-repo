@@ -122,6 +122,20 @@ any normalization lever's dev-set F1 gain, it's worth tracing *which* tokens the
 change actually touches rather than assuming the surface-level rationale is what's
 happening.
 
+
+## Ticket 2 completion checklist
+- Hypothesis stated: yes.
+- Intended normalization lever isolated: yes.
+- Dev-only model selection: yes, five configs compared before heldout.
+- Frozen heldout evaluation: yes, `keep_hashtags_raw` evaluated after dev choice.
+- FP/FN movement shown: yes, 3 false positives fixed and no new errors.
+- Concrete examples supplied: yes, ids 767, 2329, and 7908.
+- Mechanism checked rather than assumed: yes, normalized text, tokenizer output,
+  fitted vocabulary diff, and source-tweet trace.
+- Limitation supplied: yes, only 3 changed heldout predictions and McNemar p=0.25.
+- Final decision: keep the finding as diagnostic evidence of a whitespace bug, not
+  as proof that literal hashtag semantics generalize.
+
 ## AI usage note
 Tool: Claude
 AI was used only to inspect tokenization differences and confirm vocabulary diffs. 

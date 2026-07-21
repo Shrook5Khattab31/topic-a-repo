@@ -6,7 +6,7 @@ the five investigation tickets described in the assignment handout.
 ## Setup
 
 ```bash
-pip install pandas scikit-learn
+/opt/anaconda3/bin/python -m pip install pandas scikit-learn scipy
 ```
 
 ## Data
@@ -31,16 +31,16 @@ clean re-run):
 ```bash
 rm -f predictions/*.csv results/*.csv
 
-python3 experiments/ticket1_baseline.py        # baseline discrepancy diagnosis
-python3 experiments/ticket1_validation.py      # split integrity, determinism, bootstrap CI, McNemar test
-python3 experiments/ticket2_normalization.py   # normalization lever
-python3 experiments/ticket2_validation.py      # McNemar test, vocab diff, mechanism trace
-python3 experiments/ticket3_shortcuts.py       # keyword/length shortcut audit
-python3 experiments/ticket3_validation.py      # redundancy, combined model, keyword legitimacy
-python3 experiments/ticket4_decision_rule.py   # threshold/class-weight/second-classifier
-python3 experiments/ticket4_validation.py      # McNemar, bootstrap CI, oracle threshold check
-python3 experiments/ticket5_data_quality.py    # duplicate/mislabel/hard-negative audit
-python3 experiments/ticket5_validation.py      # controlled label-fix experiment + significance test
+/opt/anaconda3/bin/python experiments/ticket1_baseline.py        # baseline discrepancy diagnosis
+/opt/anaconda3/bin/python experiments/ticket1_validation.py      # split integrity, determinism, bootstrap CI, McNemar test
+/opt/anaconda3/bin/python experiments/ticket2_normalization.py   # normalization lever
+/opt/anaconda3/bin/python experiments/ticket2_validation.py      # McNemar test, vocab diff, mechanism trace
+/opt/anaconda3/bin/python experiments/ticket3_shortcuts.py       # keyword/length shortcut audit
+/opt/anaconda3/bin/python experiments/ticket3_validation.py      # redundancy, combined model, keyword legitimacy
+/opt/anaconda3/bin/python experiments/ticket4_decision_rule.py   # threshold/class-weight/second-classifier
+/opt/anaconda3/bin/python experiments/ticket4_validation.py      # McNemar, bootstrap CI, oracle threshold check
+/opt/anaconda3/bin/python experiments/ticket5_data_quality.py    # duplicate/mislabel/hard-negative audit
+/opt/anaconda3/bin/python experiments/ticket5_validation.py      # controlled label-fix experiment + significance test
 ```
 
 ## What each ticket script does
@@ -72,3 +72,59 @@ python3 experiments/ticket5_validation.py      # controlled label-fix experiment
 - `results/summary.csv` -- per-ticket summary with FP/FN deltas and decisions
 - `results/threshold_sweep.csv` -- precision/recall/F1 at each swept threshold
 - `results/data_quality_audit.csv` -- `id,issue_type,evidence,disposition,confidence`
+
+## Completed analysis deliverables
+
+The five ticket writeups in `tickets/` are completed and include the required
+hypothesis, intended lever, controlled experiment, dev evidence, held-out
+evidence, concrete examples, limitation, and AI-usage note.
+
+Before submitting or re-running locally, regenerate artifacts from a clean state:
+
+```bash
+rm -f predictions/*.csv results/*.csv
+
+/opt/anaconda3/bin/python experiments/ticket1_baseline.py
+/opt/anaconda3/bin/python experiments/ticket1_validation.py
+/opt/anaconda3/bin/python experiments/ticket2_normalization.py
+/opt/anaconda3/bin/python experiments/ticket2_validation.py
+/opt/anaconda3/bin/python experiments/ticket3_shortcuts.py
+/opt/anaconda3/bin/python experiments/ticket3_validation.py
+/opt/anaconda3/bin/python experiments/ticket4_decision_rule.py
+/opt/anaconda3/bin/python experiments/ticket4_validation.py
+/opt/anaconda3/bin/python experiments/ticket5_data_quality.py
+/opt/anaconda3/bin/python experiments/ticket5_validation.py
+```
+
+`report.pdf` is the final report deliverable. `logs/chat.md` records AI usage and
+verification steps.
+
+
+## Reproducibility check
+
+After regenerating artifacts, run this one-line check:
+
+```bash
+/opt/anaconda3/bin/python -c "import pandas as pd; p=pd.read_csv('predictions/heldout_predictions.csv'); s=pd.read_csv('results/summary.csv'); t=pd.read_csv('results/threshold_sweep.csv'); a=pd.read_csv('results/data_quality_audit.csv'); print('pred',len(p),p.duplicated(['ticket','model_name','id']).sum()); print('summary',len(s),sorted(s.ticket.unique().tolist()),s.duplicated().sum()); print('sweep',len(t),t.duplicated().sum()); print('audit',len(a),a.duplicated(['id','issue_type','evidence']).sum())"
+```
+
+Expected output:
+
+```text
+pred 7615 0
+summary 6 [1, 2, 3, 4, 5] 0
+sweep 9 0
+audit 43 0
+```
+
+The Anaconda interpreter may print CPU feature warnings in this sandboxed
+environment. Those warnings do not affect the metrics or generated artifacts.
+
+## Submission checklist
+
+- `report.pdf` is present.
+- `logs/chat.md` is present.
+- `tickets/` contains all five completed ticket writeups.
+- `results/summary.csv` includes tickets 1 through 5.
+- `predictions/heldout_predictions.csv` has the required header and no duplicate
+  `(ticket, model_name, id)` rows.

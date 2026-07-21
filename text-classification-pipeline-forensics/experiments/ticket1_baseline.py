@@ -7,7 +7,6 @@ heldout_ids, and compares against configs/project_contract.json within tolerance
 import json
 import sys
 from pathlib import Path
-
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from pipeline.data import load_raw, get_splits
@@ -68,7 +67,8 @@ def run_variant(train_df, dev_df, heldout_df, model_name, tfidf_kwargs, C, contr
 def main():
     df = load_raw()
     train_df, dev_df, heldout_df = get_splits(df)
-    contract = json.load(open(REPO_ROOT / "configs" / "project_contract.json"))
+    with open(REPO_ROOT / "configs" / "project_contract.json") as f:
+        contract = json.load(f)
 
     # Variant 1: naive/default TF-IDF+LogReg settings (bigrams, sublinear TF, C=1.0)
     run_variant(train_df, dev_df, heldout_df, "tfidf_logreg_naive_default",
