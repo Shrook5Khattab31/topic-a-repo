@@ -67,7 +67,7 @@ def main():
     print(f"{len(pure)} near-pure keywords (>=5 train rows, >=95% single-class) out of {kw_target.shape[0]} distinct keywords")
     print(pure_sorted.head(10))
 
-    for kw in ["derailment", "aftershock", "wrecked", "body%20bags", "ruin"]:
+    for kw in pure_sorted.head(10).index:
         examples = train_df[train_df["keyword"] == kw][["text", "target"]].head(3)
         print(f"\n--- keyword={kw!r} ---")
         for _, r in examples.iterrows():

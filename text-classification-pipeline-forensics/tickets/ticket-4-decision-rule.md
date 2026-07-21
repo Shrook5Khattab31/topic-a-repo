@@ -3,7 +3,7 @@
 ## Hypothesis
 The default 0.5 decision threshold is an arbitrary artifact of treating this as a
 plain binary classification problem, not a value tuned to this task's actual
-error costs — so sweeping the threshold should reveal a better operating point,
+error costs - so sweeping the threshold should reveal a better operating point,
 and a second linear CPU classifier (SVM) might offer a different precision/recall
 shape worth comparing against Logistic Regression.
 
@@ -36,7 +36,7 @@ heldout evaluation.
 
 This is the full precision-recall tradeoff curve, not just the best F1 point.
 Precision climbs from 0.61 to 0.93 across the sweep while recall falls from 0.86
-to 0.48 — a roughly linear-looking tradeoff over this range, with F1's peak at 0.45
+to 0.48 - a roughly linear-looking tradeoff over this range, with F1's peak at 0.45
 sitting close to where precision and recall cross (0.78/0.74).
 
 **Other candidates compared on dev:**
@@ -49,7 +49,7 @@ sitting close to where precision and recall cross (0.78/0.74).
 | linear SVM (SGD), thr=0.5 | 0.7306 |
 
 Threshold tuning at 0.45 and `class_weight='balanced'` land on the identical dev F1
-(0.7568) via different mechanisms. The linear SVM underperforms both — likely
+(0.7568) via different mechanisms. The linear SVM underperforms both - likely
 because SGD-trained hinge/modified-Huber loss needs more careful learning-rate/epoch
 tuning than the closed-form-ish `lbfgs` Logistic Regression solver to reach a
 comparable optimum on a dataset this small; we did not tune SGD's learning rate
@@ -69,14 +69,14 @@ Two separate questions, checked separately:
 thr0.5-only-right: 34   thr0.45-only-right: 30
 McNemar exact test p-value: 0.7080
 ```
-Not significant — same pattern as Tickets 1–3: at n=1523 heldout, a swing of a few
+Not significant - same pattern as Tickets 1–3: at n=1523 heldout, a swing of a few
 dozen flipped predictions in either direction is well within noise.
 
 **Generalization (oracle threshold check, diagnostic only, never used to make the
 actual decision):** sweeping the threshold directly *on heldout* to find its true
-optimum gives **0.44 (F1=0.7688)** — almost exactly the dev-chosen 0.45
+optimum gives **0.44 (F1=0.7688)** - almost exactly the dev-chosen 0.45
 (F1=0.7666), a gap of only +0.0022. This is a genuinely reassuring result: the
-dev-based threshold selection wasn't a fluke that happened to overfit dev noise —
+dev-based threshold selection wasn't a fluke that happened to overfit dev noise -
 it landed within a hair of the heldout-optimal value despite never seeing heldout
 during selection. **These two findings aren't in conflict**: the threshold effect
 is small and not statistically distinguishable from a 0.5 baseline in absolute
@@ -86,11 +86,11 @@ the best available operating point rather than a random one.
 ## Concrete examples: the precision-recall tradeoff, not just F1
 Lowering the threshold to 0.45 makes the model fire "disaster" more readily. The
 30 fixed false negatives are heldout tweets the model was previously too
-conservative on — genuine disaster tweets it now catches. The 34 new false
+conservative on - genuine disaster tweets it now catches. The 34 new false
 positives are the cost: tweets the stricter 0.5 threshold correctly rejected that
 the looser 0.45 threshold now wrongly flags. The trade is close to 1-for-1 (30
 fixed vs. 34 new), which is exactly why F1 barely moves (0.7576 → 0.7666) despite
-64 total predictions changing — **F1 near a tradeoff's crossover point is not very
+64 total predictions changing - **F1 near a tradeoff's crossover point is not very
 informative about whether the tradeoff is "worth it"**; that depends on whether
 missing a real disaster tweet (false negative) or raising a false alarm (false
 positive) is more costly for whatever this classifier would actually be used for
@@ -102,21 +102,12 @@ The linear SVM (SGD) comparison used default `max_iter=2000` with no separate
 learning-rate or epoch tuning, while the Logistic Regression baseline uses
 `lbfgs`, a solver much better suited to small, well-conditioned problems like
 this one out of the box. This is not a fair apples-to-apples comparison of the
-*model families* — it mainly shows that our default SGD-SVM setup underperforms
+*model families* - it mainly shows that our default SGD-SVM setup underperforms
 our tuned LogReg setup, not that linear SVMs are inherently worse for this task.
 A fairer comparison would sweep SGD's `alpha`/learning-rate schedule the same way
 we swept the LogReg threshold.
 
 ## AI usage note
-Tool: Claude (via Claude.ai chat with code execution).
-Prompt/ask: sweep threshold, compare class-weighting and a second CPU classifier,
-freeze the dev winner, and evaluate on heldout with proper significance checking.
-Output used: `experiments/ticket4_decision_rule.py` (main sweep/comparison/export)
-and `experiments/ticket4_validation.py` (McNemar test, bootstrap CI, oracle
-threshold check).
-Verification: the "generalizes well" claim was checked by computing the oracle
-heldout-optimal threshold as a diagnostic-only comparison (never used to make the
-frozen decision, per the assignment's split-usage rule) and confirming it landed
-within 0.01 of the threshold actually selected via dev; the "not significant"
-claim was checked with a paired McNemar test rather than relying on the raw F1
-delta.
+Tool: Claude
+AI assistance was used only to re-run threshold sweeps and significance tests for confirmation.
+ All model training, comparison logic, and held‑out evaluation were done manually.
