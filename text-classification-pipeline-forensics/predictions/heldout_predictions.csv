@@ -1,3 +1,4 @@
+id,y_true,y_pred,score,model_name,ticket
 13,1,1,0.5568898625621965,tfidf_logreg_naive_default,1
 17,1,0,0.38889309973225783,tfidf_logreg_naive_default,1
 19,1,1,0.7088834295082552,tfidf_logreg_naive_default,1
