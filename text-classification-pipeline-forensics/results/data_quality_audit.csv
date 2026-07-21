@@ -41,4 +41,4 @@ id,issue_type,evidence,disposition,confidence
 9029,hard_negative_confident_error,"model_score=0.080, true_label=1, text='Keep shape your shoes ??#Amazon #foot #adjust #shape #shoe Mini Shoe Tree Stretcher Shaper Width Ext'",ambiguous,high
 8721,hard_negative_confident_error,"model_score=0.082, true_label=1, text='Do you feel like you are sinking in low self-image? Take the quiz: http://t.co/bJoJVM0pjX http://t.c'",ambiguous,high
 10795,hard_negative_confident_error,"model_score=0.083, true_label=1, text='Israel wrecked my home. Now it wants my land. \nhttps://t.co/g0r3ZR1nQj'",ambiguous,high
-6134,hard_negative_confident_error,"model_score=0.086, true_label=1, text='Hellfire! We don\x89Ûªt even want to think about it or mention it so let\x89Ûªs not do anything that leads'",ambiguous,high
+6134,hard_negative_confident_error,"model_score=0.086, true_label=1, text='Hellfire! We don\x89۪t even want to think about it or mention it so let\x89۪s not do anything that leads'",ambiguous,high

@@ -8,7 +8,7 @@ since Ticket 1 flagged suspiciously high dev accuracy. Follow-up: "does fitting
 TfidfVectorizer before calling the split function leak dev/heldout vocabulary into
 train?" Third message: "show me the exact line to move and how to refit safely using
 only `split_indices.json['train']`."
-Output used: Confirmed the leak — `preprocess.py` called `vectorizer.fit_transform(full_df)`
+Output used: Confirmed the leak - `preprocess.py` called `vectorizer.fit_transform(full_df)`
 before `data.py` sliced by split indices. Kept Claude's suggested reordering: fit the
 vectorizer only on rows in `split_indices.json["train"]`, then `.transform()` dev and
 heldout separately.
@@ -23,20 +23,20 @@ Prompt/ask: Described Ticket 3 (reported dev F1 not matching `project_contract.j
 tolerance) and asked ChatGPT to explain possible causes of a persistent F1 gap when
 the dataset has a 2605/1962 class split. Asked it to list the most common reasons
 (imbalance handling, decision threshold, wrong average type) before touching code.
-Output used: Used the explanation as a checklist, not code — didn't paste anything
+Output used: Used the explanation as a checklist, not code - didn't paste anything
 directly into the repo yet.
 Verification: N/A yet, this session was purely diagnostic reasoning to plan the fix
 before writing code (continued 2026-07-13).
 
 ### 2026-07-12 - Fatma - ticket 1
 Tool: Claude
-Prompt/ask: Followed up on the previous day's fix — asked Claude to help write a
+Prompt/ask: Followed up on the previous day's fix - asked Claude to help write a
 regression-style check in `experiments/ticket1.py` that asserts the fitted vocabulary
 only contains tokens seen in the train split, so the leakage bug can't silently
 reappear.
 Output used: Added the assertion helper Claude drafted (`assert_no_vocab_leak(vectorizer,
 train_texts)`) into `experiments/ticket1.py`.
-Verification: Ran the check against the corrected pipeline — it passed. Then
+Verification: Ran the check against the corrected pipeline - it passed. Then
 temporarily reverted the fix to confirm the assertion actually fails on the old
 (buggy) ordering, so I know the test is meaningful and not just trivially passing.
 
@@ -45,7 +45,7 @@ Tool: Gemini
 Prompt/ask: Asked Gemini to compare the JSON produced by `pipeline/artifacts.py`
 against the schema fields listed in `project_contract.json` and flag any missing or
 mis-typed keys. Follow-up: "the contract expects `model_version` and a nested
-`metrics.heldout` object — can you show me the minimal diff to `artifacts.py` to
+`metrics.heldout` object - can you show me the minimal diff to `artifacts.py` to
 produce that structure without changing the metric values themselves?"
 Output used: Kept the restructuring of the export dict into the nested
 `metrics.train / metrics.dev / metrics.heldout` shape and the added `model_version`
@@ -57,7 +57,7 @@ schema section and confirmed every required key was present with matching types
 
 ### 2026-07-13 - Fatma - ticket 2
 Tool: Claude
-Prompt/ask: Moved on to Ticket 2 — asked Claude to check whether `pipeline/data.py`
+Prompt/ask: Moved on to Ticket 2 - asked Claude to check whether `pipeline/data.py`
 was actually reading `split_indices.json` or silently re-splitting with
 `train_test_split` and a random seed, since the reported split sizes (4567/1523/1523)
 didn't line up with what I was seeing in a debug print.
@@ -67,7 +67,7 @@ is what `experiments/ticket2.py` was doing. Used Claude's one-line fix: making t
 `split_path` argument required instead of defaulting to `None`, and raising a
 `ValueError` if the loaded split doesn't match the expected sizes in `README_DATA.md`.
 Verification: Re-ran `experiments/ticket2.py` with the split path passed explicitly
-and printed split sizes — got exactly train 4567 / dev 1523 / heldout 1523 as stated
+and printed split sizes - got exactly train 4567 / dev 1523 / heldout 1523 as stated
 in `README_DATA.md`, and confirmed no row indices overlapped between the three sets.
 
 ### 2026-07-13 - Mohamed - ticket 3
@@ -81,7 +81,7 @@ prompt: "also add a short docstring explaining why class_weight matters for the
 Output used: Kept the `class_weight="balanced"` change and the dual F1 logging. Left
 `random_state=13, max_iter=1000` untouched as requested.
 Verification: Re-ran `experiments/ticket3.py` on the dev split before/after the
-change — F1 on the minority class improved noticeably, and the macro F1 now falls
+change - F1 on the minority class improved noticeably, and the macro F1 now falls
 inside the tolerance band listed in `project_contract.json` for Ticket 3.
 
 ### 2026-07-14 - Mohamed - ticket 4
@@ -105,7 +105,7 @@ Prompt/ask: Asked Claude to help write a small assertion in `ticket2.py` confirm
 `set(train_idx) & set(dev_idx) & set(heldout_idx) == set()` so a future refactor can't
 silently reintroduce the random-split fallback bug.
 Output used: Added the disjointness assertion exactly as suggested.
-Verification: Ran it — passes on the current pipeline. Also manually spot-checked 10
+Verification: Ran it - passes on the current pipeline. Also manually spot-checked 10
 row indices from each split by hand against `split_indices.json` to be sure the
 assertion wasn't just checking an empty/degenerate case.
 
@@ -116,11 +116,11 @@ Python's `jsonschema` (or a manual dict-key check if that dependency isn't alrea
 the repo) so `artifacts.py`'s output can be automatically checked against
 `project_contract.json` instead of relying on manual diffing.
 Output used: Since `jsonschema` wasn't already a project dependency, took Gemini's
-fallback suggestion — a plain-Python recursive key/type checker function
-`validate_against_contract(exported_dict, contract_dict)` — to avoid adding a new
+fallback suggestion - a plain-Python recursive key/type checker function
+`validate_against_contract(exported_dict, contract_dict)` - to avoid adding a new
 dependency the team hadn't approved.
 Verification: Ran the validator against both the old (broken) and new artifact output
-— it correctly failed on the old structure (missing `model_version`) and passed on
+- it correctly failed on the old structure (missing `model_version`) and passed on
 the fixed one.
 
 ### 2026-07-16 - Mohamed - ticket 4
@@ -143,7 +143,7 @@ paragraph without overstating what we actually verified."
 Output used: Used Claude's section outline (Findings / Root Cause / Fix / Verification
 per ticket) as the report's skeleton. Rewrote the summary paragraph myself after
 Claude's draft used a stronger claim ("proves the pipeline is now fully correct") than
-we could actually support — toned it down to "resolves the five identified
+we could actually support - toned it down to "resolves the five identified
 discrepancies against the contract."
 Verification: Cross-checked every number quoted in the report draft (split sizes,
 F1 values, class counts) directly against the corresponding `experiments/ticketN.py`
@@ -177,13 +177,13 @@ primary verification remained the numeric F1 comparison against
 
 ### 2026-07-20 - Shrook - final report / log assembly
 Tool: Claude
-Prompt/ask: Asked Claude to help format this AI Usage Log file itself — specifically
+Prompt/ask: Asked Claude to help format this AI Usage Log file itself - specifically
 to make sure every entry followed the required `### [date] - [name] - [ticket]` format
 before submission, and to check none of the five tickets were missing an entry.
 Output used: Used Claude's formatting pass (spacing/heading consistency) but wrote all
 factual content (prompts, outputs, verification steps) ourselves from memory and git
 history, not generated by Claude.
 Verification: Manually checked the finished log against the five tickets in
-`project_contract.json` — confirmed Tickets 1, 2, 3, 4, 5 and the final report each
+`project_contract.json` - confirmed Tickets 1, 2, 3, 4, 5 and the final report each
 have at least one entry, and checked git blame/commit timestamps to make sure the
 dates in the log roughly match when each corresponding commit actually landed.
