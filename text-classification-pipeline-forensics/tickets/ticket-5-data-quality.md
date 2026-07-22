@@ -157,6 +157,4 @@ read as "this specific fix, on this specific 12-row set, measurably hurt" rather
 than "label-correction is bad in general."
 
 ## AI usage note
-Tool: Claude (via Claude.ai chat with code execution)
-AI was used only to help inspect duplicate groups and re-run the before/after significance test.
- All audit logic, label-fix implementation, and controlled experiment code were written and validated manually.
+AI drafted the duplicate/near-duplicate detection functions, the hard-negative extraction code, and apply_majority_vote_fix() with its before/after comparison. Manual work was reading duplicate conflicts and hard negatives by hand to rule out grouping bugs, and independently confirming the McNemar result before accepting the "reject" decision on the label fix.

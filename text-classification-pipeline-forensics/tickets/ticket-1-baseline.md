@@ -134,7 +134,4 @@ can't claim certainty that these specific settings are what the reference
 implementation actually used - only that they're *a* plausible, reproducible match.
 
 ## AI usage note
-Tool: Claude
-AI assistance was limited to verifying numerical outputs 
-(e.g., bootstrap CI, McNemar counts) and inspecting a few example flips. 
-All pipeline code, split checks, and baseline reproduction were implemented manually.
+AI drafted the structure of ticket1_baseline.py (the two-variant naive/reference-repro comparison and gap/tolerance check) and ticket1_validation.py (split integrity check, determinism loop, McNemar helper). Manual work was independent verification: re-running every script to confirm the numbers, and hand-checking the tolerance arithmetic (0.7576 − 0.7574 = 0.0002) before trusting the "match" verdict.

@@ -137,6 +137,4 @@ happening.
   as proof that literal hashtag semantics generalize.
 
 ## AI usage note
-Tool: Claude
-AI was used only to inspect tokenization differences and confirm vocabulary diffs. 
-All normalization configs, dev/held‑out evaluations, and significance tests were run manually through the project scripts.
+AI drafted ticket2_normalization.py's sweep-then-freeze structure and ticket2_validation.py's mechanism-tracing code (tokenizer inspection, fitted-vocabulary diff, source-tweet trace). Manual work included catching and rewriting an AI-drafted interpretive claim that literal hashtags "preserve signal" — rejected after independently checking tokenizer output showed identical tokens either way.

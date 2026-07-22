@@ -140,6 +140,4 @@ we swept the LogReg threshold.
 - Limitation supplied: yes, SVM family was not exhaustively tuned.
 
 ## AI usage note
-Tool: Claude
-AI assistance was used only to re-run threshold sweeps and significance tests for confirmation.
- All model training, comparison logic, and held‑out evaluation were done manually.
+AI drafted the threshold-sweep loop, the SVM classifier addition with tie-break logic, and ticket4_validation.py's McNemar/bootstrap/oracle-threshold checks. Manual work included catching two incorrect FP/FN counts in an early AI-drafted summary and replacing them with the real script output.

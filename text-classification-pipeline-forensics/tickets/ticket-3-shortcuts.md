@@ -150,6 +150,4 @@ a handful of tweets per keyword.
   generalization study.
 
 ## AI usage note
-Tool: Claude
-AI helped with reading tweet samples for keyword purity and re-running the redundancy checks. 
-The feature-isolation models and combined-model experiments were implemented and validated manually.
+AI drafted the keyword/length/text 3-model skeleton in ticket3_shortcuts.py and the redundancy/combined-model code in ticket3_validation.py (sparse feature concatenation, reused McNemar helper).
